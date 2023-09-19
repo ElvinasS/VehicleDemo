@@ -11,4 +11,6 @@ public interface VehicleService {
     Optional<Vehicle> findVehicleById(Long id);
 
     Vehicle saveVehicle(Vehicle vehicle) throws Exception;
+
+    void deleteVehicleById(Long id);
 }

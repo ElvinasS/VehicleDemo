@@ -50,6 +50,12 @@ public class VehicleServiceImpl implements VehicleService {
         }
     }
 
+    @Override
+    public void deleteVehicleById(Long id) {
+        vehicleRepository.deleteById(id);
+        log.info("Vehicle with id {} is deleted", id);
+    }
+
     public boolean hasMatch(Vehicle vehicle){
         return vehicleRepository.findAll().stream().anyMatch(vehicleDAO -> isSame(vehicle, vehicleDAO));
     }

@@ -6,6 +6,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +35,7 @@ public class VehicleController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Vehicle> findVehicleById(@PathVariable(name = "id") Long id) {
+    public ResponseEntity<Vehicle> findVehicleById(@NonNull @PathVariable(name = "id") Long id) {
         log.info("Find vehicle by passing ID, where vehicle ID is :{} ", id);
         Optional<Vehicle> vehicle = (vehicleService.findVehicleById(id));
         if (!vehicle.isPresent()) {
@@ -56,5 +57,19 @@ public class VehicleController {
         Vehicle vehicleSaved = vehicleService.saveVehicle(vehicle);
         log.debug("New vehicle is created: {}", vehicle);
         return new ResponseEntity<>(vehicleSaved, HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public ResponseEntity<Void> deleteVehicleById(@NonNull @PathVariable Long id) {
+        log.info("Delete Vehicle by passing ID, where ID is:{}", id);
+        Optional<Vehicle> vehicle = vehicleService.findVehicleById(id);
+        if (!(vehicle.isPresent())) {
+            log.warn("Vehicle for delete with id {} is not found.", id);
+            return ResponseEntity.notFound().build();
+        }
+        vehicleService.deleteVehicleById(id);
+        log.debug("Vehicle with id {} is deleted: {}", id, vehicle);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
